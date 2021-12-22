@@ -15,7 +15,6 @@ static loss     *       _get_lossfunc(int type);
 //==================================================================================
 //      ネットワーク構成
 //==================================================================================
-//toku 本当はコンストラクタですな
 void net::build(int n_inputs,int n_hidden_layers , int n_hidden_layer_units,int n_outputs , int hidden_layer_activate_type ,int output_layer_activate_type,int loss_type )
 {
     L = 1 + n_hidden_layers + 1; //入力・出力段を一緒にします。
@@ -84,28 +83,16 @@ void net::reset_w_update_parameter(void)
 void net::_w_update(float learning_rate)
 {
     _Assert(dE_dw_total_n_update > 0 , "net::w_update() no back_propagation");
-//printf("w_update() : rate:%f\n" , learning_rate);
     //======================================================
     //  w[l][i][j]  の更新を行います。
     //======================================================
-//    float _backup_w;
     for(int l = 0; l < OUTPUT_LAYER ; ++l ) {
-//        printf("   -- l[%d] --- \n" , l);
         for(int i = 1; i < n_units[l]+1 ; ++i) {
             for(int j = 0; j < n_units[l+1]+1 ; ++j ) {
                 float _backup_w = w[l][i][j];   //(debug)
-//              printf("     -- w[%d][%d][%d]  : %f ---> \n" , l , i , j , w[l][i][j] );
                 w[l][i][j] -= learning_rate * dE_dw[l][i][j];
- //               printf("                   (1) - %f * de_dw %f,\n" , learning_rate , dE_dw[l][i][j] );
-                    //toku wの更新にtotalを使い、バッチサイズで平均をとったもの）として計算するようだ。・・
+                //wの更新にtotalを使い、バッチサイズで平均をとったもの）として計算するようだ。・・
                 w[l][i][j] -= learning_rate * (dE_dw_total[l][i][j] / (float)dE_dw_total_n_update);
-//                printf("                   (2) - %f * de_dw_total  %f / dE_dw_total_n_update %f  \n" , learning_rate , dE_dw_total[l][i][j] ,  (float)dE_dw_total_n_update );
-//                printf("                ------>w[][][] =  %f\n" , w[l][i][j]);
-#if 0  //
-    if(_backup_w != w[l][i][j]){
-        printf("  w_updated w[%d][%d][%d] %f --> %f \n" , l,i,j, _backup_w , w[l][i][j]   );
-    }
-#endif
             }
         }
     }
