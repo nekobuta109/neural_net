@@ -8,48 +8,32 @@ const float * net::forward(const float input[])
 	//全部それに習わないといけません。
 	//入力値 input[] は、0 オリジンとします。こうするしかないのかなあ・・
 	//a[0],z[0]は不定です。一応０入れておきますか
-/*for( int i=0 ; i< n_units[0]+1 ; ++i){
-	printf("in[%d] %f\n" , i , input[i]);
-}*/
-
 	{
 		a[0][0] = z[0][0]=0.0;	//使いませんが
 		for(int i=1 ; i < n_units[0]+1 ; ++ i ){
 	    	a[0][i]=z[0][i] = input[i-1];
 		}
 	}
-//	dump_layer_a(0);
-
 	//==================================
     //		hidden layer	[1]-[L-2]
 	//	と、output layer [L-1]の順伝播です。
 	//==================================
 	for(int l = 1; l < L; l++) {
-//	printf(" -------------------------------  layer[%d] ---------------------------------\n" , l);
-//dump_w(l);		
-		//前段の答えが z[l-1] です。最初のレイヤのときは、z[0][]　が入力の値です。
-
 		//各入力の値は、
 		//今回のレイヤの入力値を決めていく。
 		for(int j = 1; j < n_units[l]+1 ; ++j)	{		//これが対象となるニューロンユニットです。i->j
-//			a[l][j]  = w[l-1][0][j];				//biasは、前段の[0]番目がバイアス要素のようです。
 			a[l][j]=0.0;
-													//これが違っているかも。ここは1とかの固定でいいのか？
 			for(int i = 1 ; i < n_units[l-1]+1 ; ++i) {	//前段のユニット数分、重みをかけながら足していきます。
 				a[l][j]	+=	w[l-1][i][j] * z[l-1][i];
 			}
         }
 		//zが、今回の活性化関数を書けた後の処理です。
-//printf("f 3 layer[%d]/[%d]\n"  , l , L-1 );
-//dump_layer_a(l);
 		activator[l]->array_act(n_units[l] , a[l], z[l]);
-//dump_layer_z(l);
 	}
 	//これで、最終段 z[L-1]が、ニューラルネットの答えとなります。
 	//y[]にコピーして返します。
 	for(int i=0 ; i< n_units[OUTPUT_LAYER]+1 ; ++i){
 		y[i] = z[OUTPUT_LAYER][i];
-//		printf("fw : y[%d] = %f\n" , i , y[i] );
 	}
 	return (const float*)y;
 }
