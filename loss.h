@@ -18,7 +18,7 @@ public:
         }
         return e;
     };
-    virtual void array_dE_dy(int n , float y[],float t[] , float de_dy[n] ){
+    virtual void array_dE_dy(int n , float y[],float t[] , float de_dy[] ){
         for(int i=0 ; i < n ;++i ) {    de_dy[i]  = dE_dy( y[i] , t[i] );   }
     };
 };
@@ -33,7 +33,7 @@ public:
         _Assert(n>0 , "mean_squared_error ::arrayE() n > 0 must");
         return loss::array_E(n,y,t)/n;
     }
-    virtual void array_dE_dy(int n , float y[],float t[] , float de_dy[n] ){
+    virtual void array_dE_dy(int n , float y[],float t[] , float de_dy[] ){
         _Assert(n>0 , "mean_squared_error ::array_dE_dy() n > 0 must.");
         loss::array_dE_dy(n , y, t , de_dy);
         for(int i=0; i < n ; ++i ){
